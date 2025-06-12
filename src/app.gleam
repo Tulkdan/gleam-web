@@ -1,3 +1,4 @@
+import app/web
 import envoy
 import gleam/erlang/process
 import mist
@@ -9,6 +10,8 @@ pub fn main() -> Nil {
 
   let assert Ok(secret_key_base) = envoy.get("SECRET_KEY_BASE")
 
+  let ctx = web.Context(static_directory: static_directory(), items: [])
+
   let assert Ok(_) =
     wisp_mist.handler(fn(_) { todo }, secret_key_base)
     |> mist.new
@@ -16,4 +19,9 @@ pub fn main() -> Nil {
     |> mist.start_http
 
   process.sleep_forever()
+}
+
+fn static_directory() {
+  let assert Ok(priv_directory) = wisp.priv_directory("app")
+  priv_directory <> "/static"
 }
