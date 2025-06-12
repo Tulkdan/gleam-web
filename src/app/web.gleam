@@ -1,9 +1,10 @@
+import app/models/item
 import gleam/bool
 import gleam/string_tree
 import wisp
 
 pub type Context {
-  Context(static_directory: String, items: List(String))
+  Context(static_directory: String, items: List(item.Item))
 }
 
 pub fn middleware(

@@ -1,4 +1,6 @@
+import app/routes/item_routes
 import app/web.{type Context}
+import gleam/http
 import lustre/element
 import pages/layout
 import pages/pages
@@ -6,13 +8,19 @@ import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request, ctx: Context) -> Response {
   use _req <- web.middleware(req, ctx)
+  use ctx <- item_routes.items_middleware(req, ctx)
 
   case wisp.path_segments(req) {
     [] -> {
-      [pages.home()]
+      [pages.home(ctx.items)]
       |> layout.layout
       |> element.to_document_string_tree
       |> wisp.html_response(200)
+    }
+
+    ["items", "create"] -> {
+      use <- wisp.require_method(req, http.Post)
+      item_routes.post_create_item(req, ctx)
     }
 
     ["internal-server-error"] -> wisp.internal_server_error()
