@@ -88,3 +88,39 @@ fn item_to_json(item: item.Item) -> String {
   ])
   |> json.to_string
 }
+
+pub fn delete_item(req: wisp.Request, ctx: web.Context, item_id: String) {
+  let json_items =
+    ctx.items
+    |> list.filter(fn(item) { item.id != item_id })
+    |> todos_to_json
+
+  wisp.redirect("/")
+  |> wisp.set_cookie(req, "items", json_items, wisp.PlainText, 60 * 60 * 24)
+}
+
+pub fn patch_toggle_todo(req: wisp.Request, ctx: web.Context, item_id: String) {
+  let result = {
+    use _ <- result.try(
+      ctx.items
+      |> list.find(fn(item) { item.id == item_id }),
+    )
+
+    ctx.items
+    |> list.map(fn(item) {
+      case item.id == item_id {
+        False -> item
+        True -> item.toggle_todo(item)
+      }
+    })
+    |> todos_to_json
+    |> Ok
+  }
+
+  case result {
+    Ok(todos) ->
+      wisp.redirect("/")
+      |> wisp.set_cookie(req, "items", todos, wisp.PlainText, 60 * 60 * 24)
+    Error(_) -> wisp.bad_request()
+  }
+}
