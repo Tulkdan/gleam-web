@@ -1,5 +1,7 @@
 import app/web.{type Context}
-import gleam/string_tree
+import lustre/element
+import pages/layout
+import pages/pages
 import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request, ctx: Context) -> Response {
@@ -7,7 +9,10 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
 
   case wisp.path_segments(req) {
     [] -> {
-      wisp.html_response(string_tree.from_string("Hello world!"), 200)
+      [pages.home()]
+      |> layout.layout
+      |> element.to_document_string_tree
+      |> wisp.html_response(200)
     }
 
     ["internal-server-error"] -> wisp.internal_server_error()
