@@ -1,24 +1,9 @@
-# app
+# Web server
 
-[![Package Version](https://img.shields.io/hexpm/v/app)](https://hex.pm/packages/app)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/app/)
-
-```sh
-gleam add app@1
-```
-```gleam
-import app
-
-pub fn main() -> Nil {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/app>.
+Follow the blog post to learn how to create a web server in Gleam using Lustre, Mist and Wisp
 
 ## Development
 
 ```sh
 gleam run   # Run the project
-gleam test  # Run the tests
 ```
